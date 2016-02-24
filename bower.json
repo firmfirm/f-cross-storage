@@ -6,13 +6,12 @@
   ],
   "description": "Wrapper element for `cross-storage` client",
   "keywords": [
+    "web-components",
     "local",
     "storage",
     "cross",
     "domain",
-    "wrapper",
-    "polymer",
-    "web-components"
+    "polymer"
   ],
   "main": "f-cross-storage.html",
   "homepage": "https://github.com/firmfirm/f-cross-storage/",
