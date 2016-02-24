@@ -1,0 +1,32 @@
+{
+  "name": "f-cross-storage",
+  "version": "0.1.0",
+  "authors": [
+    "Martynas <martynas@firmfirm.co>"
+  ],
+  "description": "Wrapper element for `cross-storage` client",
+  "keywords": [
+    "local",
+    "storage",
+    "cross",
+    "domain",
+    "wrapper",
+    "polymer",
+    "web-components"
+  ],
+  "main": "f-cross-storage.html",
+  "homepage": "https://github.com/firmfirm/f-cross-storage/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "cross-storage": "firmfirm/cross-storage#^0.8.1",
+    "promise-to-retry": "^0.2.4"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  }
+}
