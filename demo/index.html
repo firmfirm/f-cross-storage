@@ -18,10 +18,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body unresolved>
 
-    <code>&lt;f-cross-storage pull push ...&gt;</code>
+    <code>&lt;f-cross-storage auto-pull auto-push ...&gt;</code>
     <p>Type some text, check your browser's local storage, reload the page</p>
     <template is="dom-bind">
-      <f-cross-storage hub-url="https://auth-hub-staging.zamok2.com" pull push
+      <f-cross-storage hub-url="https://auth-hub-staging.zamok2.com" auto-pull auto-push
                        key="mySetting" value="{{myProperty}}"></f-cross-storage>
       <input type="text" value="{{myProperty::input}}" />
     </template>

@@ -75,10 +75,10 @@
               });
             });
 
-            describe('[pull]', function() {
+            describe('[auto-pull]', function() {
               beforeEach(function(done) {
                 el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.pull = true;
+                el.autoPull = true;
               });
               it('fires `f-cross-storage-error` on failure', function() {
                 expect(errorSpy).calledOnce;
@@ -86,10 +86,10 @@
               });
             });
 
-            describe('[push]', function() {
+            describe('[auto-push]', function() {
               beforeEach(function(done) {
                 el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.push = true;
+                el.autoPush = true;
                 el.value = 'val';
               });
               it('fires `f-cross-storage-error` on failure', function() {
@@ -102,12 +102,12 @@
           describe('success', function() {
             beforeEach(() => PromiseToRetry.ensure.callsArg(0));
 
-            describe('[pull]', function() {
+            describe('[auto-pull]', function() {
 
               beforeEach((done) => {
                 client.get.withArgs('key').returns(new Promise((r) => r('old')));
                 el.addEventListener('value-changed', () => done());
-                el.pull = true;
+                el.autoPull = true;
               });
 
               it('ensures success with PromiseToRetry', function() {
@@ -126,14 +126,14 @@
 
             });
 
-            describe('[push]', function() {
+            describe('[auto-push]', function() {
 
               beforeEach((done) => {
                 client.set = sinon.spy(()=> {
                   done();
                   return new Promise((r) => r('new'));
                 });
-                el.push = true;
+                el.autoPush = true;
                 el.value = 'new';
               });
 

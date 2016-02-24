@@ -8,7 +8,7 @@ built with Polymer.
 
 Example:
 
-    <f-cross-storage hub-url="https://..." key="mySetting" value="{{myProperty}}" pull></f-cross-storage>
+    <f-cross-storage hub-url="https://..." key="mySetting" value="{{myProperty}}" auto-pull></f-cross-storage>
 
 @demo demo/index.html
 @hero hero.svg
@@ -36,15 +36,15 @@ Example:
         /*
          * Automatically pull object from storage and set it to `value` property
          */
-        pull: Boolean,
+        autoPull: Boolean,
 
         /*
          * Automatically set object from `value` property to storage (triggered on change)
          */
-        push: Boolean,
+        autoPush: Boolean,
 
         /*
-         * Stored value (could go out of sync if you do not use `push`)
+         * Stored value (could go out of sync if you do not use `auto-pull` and `auto-push`)
          */
         value: {
           type: Object,
@@ -56,8 +56,8 @@ Example:
 
       observers: [
         '_connect(hubUrl)',
-        '_pull(pull, _client, key)',
-        '_push(push, _client, key, value)'
+        '_pull(autoPull, _client, key)',
+        '_push(autoPush, _client, key, value)'
       ],
 
       _connect: function(url) {
