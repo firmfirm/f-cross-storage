@@ -1,0 +1,80 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../promise-to-retry/promise-to-retry.html">
+<link rel="import" href="../cross-storage/imports/client.html">
+<link rel="import" href="./finterface-cross-storage.html">
+
+<!--
+The following imports are available:
+
+  - [f-cross-storage.html](#f-cross-storage)
+  - [finterface-cross-storage.html](#FInterface.CrossStorage)
+
+@pseudoElement Documentation
+@demo demo/index.html
+-->
+
+<!--
+`<f-cross-storage>` is a wrapper element for [cross-storage](https://github.com/zendesk/cross-storage) client,
+built with Polymer.
+
+Example:
+
+    <f-cross-storage hub-url="https://..." key="mySetting" value="{{myProperty}}" auto-pull></f-cross-storage>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="f-cross-storage">
+
+  <script>
+  (function() {
+    var clients = {};
+    Polymer({
+      is: 'f-cross-storage',
+      behaviors: [FInterface.CrossStorage],
+
+      properties: { _client: Object },
+
+      observers: [
+        '_connect(hubUrl)',
+        '_pull(autoPull, _client, key)',
+        '_push(autoPush, _client, key, value)'
+      ],
+
+      _connect: function(url) {
+        if (!clients[url]) {
+          clients[url] = new CrossStorageClient(url);
+        }
+        this._client = clients[url];
+      },
+
+      _pull: function(ok, client, key) {
+        if (!ok) return;
+        PromiseToRetry.ensure(() =>
+                client.onConnect()
+                      .then(() => client.get(key))
+                      .then((val) => this.value = val), this._fail.bind(this));
+      },
+
+      _push: function(ok, client, key, value) {
+        if (!ok) return;
+        PromiseToRetry.ensure(() =>
+                client.onConnect()
+                      .then(() => client.set(key, value)), this._fail.bind(this));
+      },
+
+      /**
+       * The `f-cross-storage-error` event is fired whenever element fails to
+       * retrieve of set value in cross-storage. Will automatically retry after
+       * `time` specified in event's `detail` (in milliseconds).
+       *
+       * @event f-cross-storage-error
+       * @detail {{tries: Number, wait: Number, error: Object}}
+       */
+
+      _fail: function(detail) { this.fire('f-cross-storage-error', detail); }
+    });
+  })();
+  </script>
+</dom-module>

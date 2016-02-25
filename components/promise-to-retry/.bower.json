@@ -1,0 +1,30 @@
+{
+  "name": "promise-to-retry",
+  "version": "0.2.5",
+  "authors": [
+    "Martynas <martynas@firmfirm.co>"
+  ],
+  "description": "Helper function to easily retry some action returning Promise until it succeeds",
+  "keywords": [
+    "retry",
+    "promise"
+  ],
+  "main": "promise-to-retry.html",
+  "homepage": "https://github.com/firmfirm/promise-to-retry/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "devDependencies": {
+    "web-component-tester": "^4.2.1"
+  },
+  "_release": "0.2.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.5",
+    "commit": "cd244af70fcc357a725c3e425aee53a29a518daa"
+  },
+  "_source": "git://github.com/firmfirm/promise-to-retry.git",
+  "_target": "^0.2.4",
+  "_originalSource": "promise-to-retry"
+}

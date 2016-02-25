@@ -1,0 +1,40 @@
+{
+  "name": "cross-storage",
+  "version": "0.8.2",
+  "description": "Cross domain local storage",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Daniel St. Jules",
+      "email": "danielst.jules@gmail.com",
+      "url": "http://danielstjules.com"
+    }
+  ],
+  "keywords": [
+    "local",
+    "storage",
+    "cross",
+    "domain"
+  ],
+  "ignore": [
+    ".*",
+    "media",
+    "gulpfile.js",
+    "package.json",
+    "README.md",
+    "index.js",
+    "lib",
+    "example",
+    "test"
+  ],
+  "homepage": "https://github.com/firmfirm/cross-storage",
+  "_release": "0.8.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.8.2",
+    "commit": "91864b1d10925849b26cd6161ddcc87ddd0260ad"
+  },
+  "_source": "git://github.com/firmfirm/cross-storage.git",
+  "_target": "^0.8.1",
+  "_originalSource": "firmfirm/cross-storage"
+}

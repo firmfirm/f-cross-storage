@@ -1,0 +1,39 @@
+<link rel="import" href="../finterface-key-value-store/finterface-key-value-store.html">
+<script>
+
+/**
+ * `FInterface.CrossStorage` exposes public interface of `<f-cross-storage>`.
+ *
+ * To be used in it's wrappers, stubs or replacements.
+ *
+ * @polymerBehavior
+ */
+FInterface.CrossStorage = [FInterface.KeyValueStore, {
+  properties: {
+    /*
+     * URL to your cross-storage hub
+     */
+    hubUrl: {
+      type: String,
+      reflectToAttribute: true
+    },
+
+    /*
+     * Automatically pull object from storage and set it to `value` property
+     */
+    autoPull: {
+      type: Boolean,
+      reflectToAttribute: true
+    },
+
+    /*
+     * Automatically set object from `value` property to storage (triggered on change)
+     */
+    autoPush: {
+      type: Boolean,
+      reflectToAttribute: true
+    }
+  }
+}];
+
+</script>
