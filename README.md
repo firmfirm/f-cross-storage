@@ -1,6 +1,6 @@
 # `<f-cross-storage>` [ ![Codeship Status for firmfirm/f-cross-storage](https://codeship.com/projects/9f3a23c0-bd1d-0133-ad27-129a4e5cf2b4/status?branch=master)](https://codeship.com/projects/136459)
 
-`<f-cross-storage>` is a wrapper element for [zendesk/cross-storage](https://github.com/zendesk/cross-storage) client (not hub), built with Polymer.
+Wrapper element for [zendesk/cross-storage](https://github.com/zendesk/cross-storage) client (hub isn't implemented), built with Polymer.
 
 More information, API documentation and demo are in [Component page](https://firmfirm.github.io/f-cross-storage/).
 

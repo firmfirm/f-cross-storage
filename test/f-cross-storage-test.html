@@ -170,6 +170,17 @@
 
         });
 
+        it('reflects properties to attributes', function() {
+          el.hubUrl = 'some url';
+          expect(el.getAttribute('hub-url')).to.be.ok;
+
+          el.autoPull = true;
+          expect(el.getAttribute('auto-pull')).to.not.be.null;
+
+          el.autoPush = true;
+          expect(el.getAttribute('auto-push')).to.not.be.null;
+        });
+
       });
     </script>
 
