@@ -16,22 +16,6 @@ FInterface.CrossStorage = [FInterface.KeyValueStore, {
     hubUrl: {
       type: String,
       reflectToAttribute: true
-    },
-
-    /*
-     * Automatically pull object from storage and set it to `value` property
-     */
-    autoPull: {
-      type: Boolean,
-      reflectToAttribute: true
-    },
-
-    /*
-     * Automatically set object from `value` property to storage (triggered on change)
-     */
-    autoPush: {
-      type: Boolean,
-      reflectToAttribute: true
     }
   }
 }];

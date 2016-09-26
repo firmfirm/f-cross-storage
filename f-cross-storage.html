@@ -19,7 +19,7 @@ built with Polymer.
 
 Example:
 
-    <f-cross-storage hub-url="https://..." key="mySetting" value="{{myProperty}}" auto-pull></f-cross-storage>
+    <f-cross-storage hub-url="https://..." key="mySetting" value="{{myProperty}}"></f-cross-storage>
 
 @demo demo/index.html
 @hero hero.svg
@@ -38,8 +38,8 @@ Example:
 
       observers: [
         '_connect(hubUrl)',
-        '_pull(autoPull, _client, key)',
-        '_push(autoPush, _client, key, value)'
+        '_pull(_client, key)',
+        '_push(_client, key, value)'
       ],
 
       _connect: function(url) {
@@ -49,16 +49,14 @@ Example:
         this._client = clients[url];
       },
 
-      _pull: function(ok, client, key) {
-        if (!ok) return;
+      _pull: function(client, key) {
         PromiseToRetry.ensure(() =>
                 client.onConnect()
                       .then(() => client.get(key))
                       .then((val) => this.value = val), this._fail.bind(this));
       },
 
-      _push: function(ok, client, key, value) {
-        if (!ok) return;
+      _push: function(client, key, value) {
         PromiseToRetry.ensure(() =>
                 client.onConnect()
                       .then(() => client.set(key, value)), this._fail.bind(this));
@@ -73,7 +71,8 @@ Example:
        * @detail {{tries: Number, wait: Number, error: Object}}
        */
 
-      _fail: function(detail) { this.fire('f-cross-storage-error', detail); }
+      _fail: function(detail) {
+        this.fire('f-cross-storage-error', detail); }
     });
   })();
   </script>

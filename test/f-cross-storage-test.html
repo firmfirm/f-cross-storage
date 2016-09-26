@@ -12,7 +12,7 @@
       var client;
       CrossStorageClient = sinon.stub().returns(client = {
         onConnect: sinon.stub(),
-        get: sinon.stub()
+        get: sinon.stub(),
       });
       PromiseToRetry.ensure = sinon.stub();
     </script>
@@ -21,7 +21,7 @@
 
     <test-fixture id="f-cross-storage-fixture">
       <template>
-        <f-cross-storage key="key"></f-cross-storage>
+        <f-cross-storage></f-cross-storage>
       </template>
     </test-fixture>
 
@@ -75,10 +75,10 @@
               });
             });
 
-            describe('[auto-pull]', function() {
+            describe('[pull]', function() {
               beforeEach(function(done) {
                 el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.autoPull = true;
+                el.key = "trigger new pull";
               });
               it('fires `f-cross-storage-error` on failure', function() {
                 expect(errorSpy).calledOnce;
@@ -86,10 +86,10 @@
               });
             });
 
-            describe('[auto-push]', function() {
+            describe('[push]', function() {
               beforeEach(function(done) {
+                el.key = 'key';
                 el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.autoPush = true;
                 el.value = 'val';
               });
               it('fires `f-cross-storage-error` on failure', function() {
@@ -102,43 +102,54 @@
           describe('success', function() {
             beforeEach(() => PromiseToRetry.ensure.callsArg(0));
 
-            describe('[auto-pull]', function() {
+            describe('[pull]', function() {
 
-              beforeEach((done) => {
-                client.get.withArgs('key').returns(new Promise((r) => r('old')));
-                el.addEventListener('value-changed', () => done());
-                el.autoPull = true;
-              });
+              waitForValue = (done) => {
+                let cb = () => {
+                  el.removeEventListener('value-changed', cb);
+                  done();
+                };
+                el.addEventListener('value-changed', cb);
+              };
 
-              it('ensures success with PromiseToRetry', function() {
-                expect(PromiseToRetry.ensure).calledOnce;
-                expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
-              });
+              describe('[key exists]', function() {
+                beforeEach((done) => {
+                  client.get.withArgs('refresh').returns(new Promise((r) => r('old')));
+                  waitForValue(done);
+                  el.key = 'refresh';
+                });
 
-              it('connects first', function() {
-                expect(client.onConnect).calledOnce;
-                expect(client.onConnect).calledBefore(client.get);
-              });
+                it('ensures success with PromiseToRetry', function() {
+                  expect(PromiseToRetry.ensure).calledOnce;
+                  expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
+                });
 
-              it('sets and notifies value from storage', function() {
-                expect(el.value).to.equal('old');
+                it('connects first', function() {
+                  expect(client.onConnect).calledOnce;
+                  expect(client.onConnect).calledBefore(client.get);
+                });
+
+                it('sets and notifies value from storage', function() {
+                  expect(el.value).to.equal('old');
+                });
               });
 
             });
 
-            describe('[auto-push]', function() {
+            describe('[push]', function() {
 
               beforeEach((done) => {
                 client.set = sinon.spy(()=> {
                   done();
                   return new Promise((r) => r('new'));
                 });
-                el.autoPush = true;
+                el.key = 'key';
                 el.value = 'new';
               });
 
               it('ensures success with PromiseToRetry', function() {
-                expect(PromiseToRetry.ensure).calledOnce;
+                // once for pull and once for push
+                expect(PromiseToRetry.ensure).calledTwice;
                 expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
               });
 
@@ -173,12 +184,6 @@
         it('reflects properties to attributes', function() {
           el.hubUrl = 'some url';
           expect(el.getAttribute('hub-url')).to.be.ok;
-
-          el.autoPull = true;
-          expect(el.getAttribute('auto-pull')).to.not.be.null;
-
-          el.autoPush = true;
-          expect(el.getAttribute('auto-push')).to.not.be.null;
         });
 
       });
