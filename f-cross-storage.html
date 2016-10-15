@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../f-singleton/f-singleton.html">
 <link rel="import" href="../promise-to-retry/promise-to-retry.html">
 <link rel="import" href="../cross-storage/imports/client.html">
 <link rel="import" href="./finterface-cross-storage.html">
@@ -26,7 +27,9 @@ Example:
 -->
 
 <dom-module id="f-cross-storage">
-
+  <template>
+    <f-singleton key="{{key}}" value="{{value}}"></f-singleton>
+  </template>
   <script>
   (function() {
     var clients = {};
