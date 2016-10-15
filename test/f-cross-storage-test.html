@@ -25,30 +25,26 @@
       </template>
     </test-fixture>
 
-    <test-fixture id="f-cross-storage-other-fixture">
-      <template>
-        <f-cross-storage></f-cross-storage>
-      </template>
-    </test-fixture>
-
     <script>
       describe('<f-cross-storage>', function() {
 
-        var el, otherEl;
+        var el;
 
         beforeEach(function() {
+          replace('f-singleton').with('fake-f-singleton');
           el = fixture('f-cross-storage-fixture');
-          otherEl = fixture('f-cross-storage-other-fixture');
         });
 
         afterEach(function() {
           CrossStorageClient.reset();
         });
 
+        // TODO: test that it uses f-singleton
+
         describe('repeating [hub-url]', function() {
 
           beforeEach(function() {
-            el.hubUrl = otherEl.hubUrl = 'same-hub';
+            el.hubUrl = 'same-hub';
             client.onConnect.returns(new Promise((r) => r()));
           });
 
@@ -171,12 +167,11 @@
 
           beforeEach(function() {
             el.hubUrl = 'some-hub';
-            otherEl.hubUrl = 'other-hub';
           });
 
           it('uses the same reference to client object', function() {
             expect(CrossStorageClient).to.be.calledWithNew
-            expect(CrossStorageClient).to.be.calledTwice
+            expect(CrossStorageClient).to.be.calledOnce
           });
 
         });
