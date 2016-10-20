@@ -52,6 +52,8 @@
             client.onConnect.reset();
             client.get.reset();
             PromiseToRetry.ensure.reset();
+            // clear f-singleton state
+            el.value = undefined;
           });
 
           it('only creates one client', function() {
@@ -75,6 +77,9 @@
               beforeEach(function(done) {
                 el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
                 el.key = "trigger new pull";
+              });
+              afterEach(function() {
+                el.removeEventListener('f-cross-storage-error', errorSpy);
               });
               it('fires `f-cross-storage-error` on failure', function() {
                 expect(errorSpy).calledOnce;
@@ -109,10 +114,15 @@
               };
 
               describe('[key exists]', function() {
-                beforeEach((done) => {
+                beforeEach(function(done) {
                   client.get.withArgs('refresh').returns(new Promise((r) => r('old')));
                   waitForValue(done);
                   el.key = 'refresh';
+                });
+
+                afterEach(function() {
+                  // clear f-singleton state
+                  el.value = undefined;
                 });
 
                 it('ensures success with PromiseToRetry', function() {

@@ -1,6 +1,4 @@
-<link rel="import" href="../finterface-key-value-store/finterface-key-value-store.html">
 <script>
-
 /**
  * `FInterface.CrossStorage` exposes public interface of `<f-cross-storage>`.
  *
@@ -8,16 +6,21 @@
  *
  * @polymerBehavior
  */
-FInterface.CrossStorage = [FInterface.KeyValueStore, {
-  properties: {
-    /*
-     * URL to your cross-storage hub
-     */
-    hubUrl: {
-      type: String,
-      reflectToAttribute: true
+FInterface.CrossStorage = Polymer.Utils.dedupingMixin(function(superClass) {
+  return class CrossStorage extends superClass {
+    static get config() {
+      return {
+        properties: {
+          /*
+           * URL to your cross-storage hub
+           */
+          hubUrl: {
+            type: String,
+            reflectToAttribute: true
+          }
+        }
+      };
     }
   }
-}];
-
+});
 </script>

@@ -2,7 +2,7 @@
 
 Wrapper element for [zendesk/cross-storage](https://github.com/zendesk/cross-storage) client (hub isn't implemented), built with Polymer.
 
-More information, API documentation and demo are in [Component page](https://firmfirm.github.io/f-cross-storage/).
+More information, API documentation and demo are in [Component page](https://firmfirm.github.io/f-cross-storage/) (**temporarily unavailable**).
 
 Using ES6 features, so take care in production apps.
 

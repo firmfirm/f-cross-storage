@@ -13,18 +13,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>f-cross-storage Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="../f-cross-storage.html">
   </head>
   <body unresolved>
-
     <code>&lt;f-cross-storage auto-pull auto-push ...&gt;</code>
     <p>Type some text, check your browser's local storage, reload the page</p>
-    <template is="dom-bind">
-      <f-cross-storage hub-url="https://auth-hub-staging.zamok2.com" auto-pull auto-push
-                       key="mySetting" value="{{myProperty}}"></f-cross-storage>
-      <input type="text" value="{{myProperty::input}}" />
-    </template>
-
+    <dom-bind>
+      <template>
+        <f-singleton key="mySetting" value="{{singleton}}"></f-singleton>
+        <label>[[singleton]]</label>
+        <f-cross-storage hub-url="https://auth-hub-staging.zamok2.com" auto-pull auto-push
+                         key="mySetting" value="{{myProperty}}"></f-cross-storage>
+        <input type="text" value="{{myProperty::input}}" />
+      </template>
+    </dom-bind>
   </body>
 </html>

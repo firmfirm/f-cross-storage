@@ -31,39 +31,45 @@ Example:
     <f-singleton key="{{key}}" value="{{value}}"></f-singleton>
   </template>
   <script>
-  (function() {
+  FirmFirm.CrossStorage = (function() {
     var clients = {};
-    Polymer({
-      is: 'f-cross-storage',
-      behaviors: [FInterface.CrossStorage],
+    class FCrossStorage extends FInterface.CrossStorage(FirmFirm.FSingleton) {
+      static get is() { return 'f-cross-storage'; }
+      static get config() {
+        return {
+          properties: { _client: Object },
+          observers: [
+            '_connect(hubUrl)',
+            '_pull(_client, key)',
+            '_push(_client, key, value)'
+          ],
+        }
+      }
 
-      properties: { _client: Object },
-
-      observers: [
-        '_connect(hubUrl)',
-        '_pull(_client, key)',
-        '_push(_client, key, value)'
-      ],
-
-      _connect: function(url) {
+      _connect(url) {
         if (!clients[url]) {
           clients[url] = new CrossStorageClient(url);
         }
         this._client = clients[url];
-      },
+      }
 
-      _pull: function(client, key) {
-        PromiseToRetry.ensure(() =>
-                client.onConnect()
-                      .then(() => client.get(key))
-                      .then((val) => this.value = val), this._fail.bind(this));
-      },
+      _pull(client, key) {
+        if (client && key) {
+          PromiseToRetry.ensure(() =>
+                  client.onConnect()
+                        .then(() => client.get(key))
+                        .then((val) => this.value = this._lastPull = val),
+                  this._fail.bind(this));
+        }
+      }
 
-      _push: function(client, key, value) {
-        PromiseToRetry.ensure(() =>
-                client.onConnect()
-                      .then(() => client.set(key, value)), this._fail.bind(this));
-      },
+      _push(client, key, value) {
+        if (client && key && typeof value !== "undefined" && value !== this._lastPull) {
+          PromiseToRetry.ensure(
+            () => client.onConnect().then(() => client.set(key, value)),
+            this._fail.bind(this));
+        }
+      }
 
       /**
        * The `f-cross-storage-error` event is fired whenever element fails to
@@ -74,9 +80,13 @@ Example:
        * @detail {{tries: Number, wait: Number, error: Object}}
        */
 
-      _fail: function(detail) {
-        this.fire('f-cross-storage-error', detail); }
-    });
+      _fail(detail) {
+        const e = new CustomEvent('f-cross-storage-error', {detail});
+        this.dispatchEvent(e, {bubbles: true});
+      }
+    }
+    customElements.define(FCrossStorage.is, FCrossStorage);
+    return FCrossStorage;
   })();
   </script>
 </dom-module>
