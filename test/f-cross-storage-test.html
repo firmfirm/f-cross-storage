@@ -114,10 +114,12 @@
               };
 
               describe('[key exists]', function() {
+                let testNo = 0;
                 beforeEach(function(done) {
-                  client.get.withArgs('refresh').returns(new Promise((r) => r('old')));
+                  const key = `refresh${++testNo}`;
+                  client.get.withArgs(key).returns(new Promise((r) => r('old')));
                   waitForValue(done);
-                  el.key = 'refresh';
+                  el.key = key;
                 });
 
                 afterEach(function() {
@@ -144,12 +146,13 @@
 
             describe('[push]', function() {
 
+              let testNo = 0;
               beforeEach((done) => {
                 client.set = sinon.spy(()=> {
                   done();
                   return new Promise((r) => r('new'));
                 });
-                el.key = 'key';
+                el.key = `key${++testNo}`;
                 el.value = 'new';
               });
 
@@ -165,7 +168,7 @@
 
               it('sets storage value', function() {
                 expect(client.set).calledOnce;
-                expect(client.set).calledWith('key', 'new');
+                expect(client.set).calledWith(`key${testNo}`, 'new');
               });
 
             });
