@@ -58,13 +58,14 @@ Example:
           PromiseToRetry.ensure(() =>
                   client.onConnect()
                         .then(() => client.get(key))
-                        .then((val) => this.value = this._lastPull = val),
+                        .then((val) => this.value = this._lastValue = val),
                   this._fail.bind(this));
         }
       }
 
       _push(client, key, value) {
-        if (client && key && typeof value !== "undefined" && value !== this._lastPull) {
+        if (client && key && typeof value !== "undefined" && value !== this._lastValue) {
+          this._lastValue = value;
           PromiseToRetry.ensure(
             () => client.onConnect().then(() => client.set(key, value)),
             this._fail.bind(this));
