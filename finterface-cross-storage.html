@@ -6,19 +6,17 @@
  *
  * @polymerBehavior
  */
-FInterface.CrossStorage = Polymer.Utils.dedupingMixin(function(superClass) {
+FInterface.CrossStorage = Polymer.dedupingMixin(function(superClass) {
   return class CrossStorage extends superClass {
-    static get config() {
+    static get properties() {
       return {
-        properties: {
-          /*
-           * URL to your cross-storage hub
-           */
-          hubUrl: {
-            type: String,
-            reflectToAttribute: true
-          }
-        }
+        /*
+         * URL to your cross-storage hub
+         */
+        hubUrl: {
+          type: String,
+          reflectToAttribute: true
+        },
       };
     }
   }

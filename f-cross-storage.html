@@ -35,15 +35,17 @@ Example:
     var clients = {};
     class FCrossStorage extends FInterface.CrossStorage(FirmFirm.FSingleton) {
       static get is() { return 'f-cross-storage'; }
-      static get config() {
+      static get properties() {
         return {
-          properties: { _client: Object },
-          observers: [
-            '_connect(hubUrl)',
-            '_pull(_client, key)',
-            '_push(_client, key, value)'
-          ],
-        }
+          _client: Object,
+        };
+      }
+      static get observers() {
+        return [
+          '_connect(hubUrl)',
+          '_pull(_client, key)',
+          '_push(_client, key, value)'
+        ];
       }
 
       _connect(url) {
