@@ -9,12 +9,6 @@
 
     <link rel="import" href="../f-cross-storage.html">
     <script>
-      var client;
-      CrossStorageClient = sinon.stub().returns(client = {
-        onConnect: sinon.stub(),
-        get: sinon.stub(),
-      });
-      PromiseToRetry.ensure = sinon.stub();
     </script>
   </head>
   <body>
@@ -28,7 +22,15 @@
     <script>
       describe('<f-cross-storage>', function() {
 
-        var el;
+        var el, client;
+
+        before(function() {
+          CrossStorageClient = sinon.stub().returns(client = {
+            onConnect: sinon.stub(),
+            get: sinon.stub(),
+          });
+          PromiseToRetry.ensure = sinon.stub();
+        });
 
         beforeEach(function() {
           replace('f-singleton').with('fake-f-singleton');
