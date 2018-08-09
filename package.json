@@ -2,7 +2,7 @@
   "name": "f-cross-storage",
   "version": "2.5.0",
   "description": "Wrapper element for `cross-storage` client",
-   "scripts": {
+  "scripts": {
     "test": "polymer test --npm",
     "start": "polymer serve --npm"
   },
@@ -19,8 +19,8 @@
   "main": "f-cross-storage.js",
   "author": "Martynas <martynas@firmfirm.co>",
   "dependencies": {
+    "@mkazlauskas/cross-storage": "^2.5.0",
     "@polymer/polymer": "^3.0.0",
-    "cross-storage": "^1.0.0",
     "f-singleton": "^2.5.1",
     "finterface-key-value-store": "^2.5.1",
     "promise-to-retry": "^2.5.1"

@@ -28,7 +28,7 @@ import {html} from "@polymer/polymer/polymer-element.js"
 
 import 'f-singleton/f-singleton.js';
 import 'promise-to-retry/promise-to-retry.js';
-import 'cross-storage/dist/client.js';
+import '@mkazlauskas/cross-storage/dist/client.js';
 import './finterface-cross-storage.js';
 FirmFirm.CrossStorage = (function() {
   var clients = {};
