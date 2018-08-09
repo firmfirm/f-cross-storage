@@ -1,0 +1,33 @@
+{
+  "name": "f-cross-storage",
+  "version": "2.5.0",
+  "description": "Wrapper element for `cross-storage` client",
+   "scripts": {
+    "test": "polymer test --npm",
+    "start": "polymer serve --npm"
+  },
+  "keywords": [
+    "web-components",
+    "local",
+    "storage",
+    "cross",
+    "domain",
+    "polymer"
+  ],
+  "homepage": "https://github.com/firmfirm/f-cross-storage/",
+  "license": "MIT",
+  "main": "f-cross-storage.js",
+  "author": "Martynas <martynas@firmfirm.co>",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0",
+    "cross-storage": "^1.0.0",
+    "f-singleton": "^2.5.1",
+    "finterface-key-value-store": "^2.5.1",
+    "promise-to-retry": "^2.5.1"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^3.0.0-pre.18",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.1"
+  }
+}

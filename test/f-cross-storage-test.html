@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../../wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="../f-cross-storage.html">
-    <script>
-    </script>
+    <script type="module" src="../f-cross-storage.js"></script>
+    <script type="module">
+import '../f-cross-storage.js';
+</script>
   </head>
   <body>
 
@@ -19,185 +20,187 @@
       </template>
     </test-fixture>
 
-    <script>
-      describe('<f-cross-storage>', function() {
+    <script type="module">
+import '../f-cross-storage.js';
+window.Polymer = {};
+describe('<f-cross-storage>', function() {
 
-        var el, client;
+  var el, client;
 
-        before(function() {
-          CrossStorageClient = sinon.stub().returns(client = {
-            onConnect: sinon.stub(),
-            get: sinon.stub(),
-          });
-          PromiseToRetry.ensure = sinon.stub();
+  before(function() {
+    CrossStorageClient = sinon.stub().returns(client = {
+      onConnect: sinon.stub(),
+      get: sinon.stub(),
+    });
+    PromiseToRetry.ensure = sinon.stub();
+  });
+
+  beforeEach(function() {
+    replace('f-singleton').with('fake-f-singleton');
+    el = fixture('f-cross-storage-fixture');
+  });
+
+  afterEach(function() {
+    CrossStorageClient.reset();
+  });
+
+  // TODO: test that it uses f-singleton
+
+  describe('repeating [hub-url]', function() {
+
+    beforeEach(function() {
+      el.hubUrl = 'same-hub';
+      client.onConnect.returns(new Promise((r) => r()));
+    });
+
+    afterEach(function() {
+      client.onConnect.reset();
+      client.get.reset();
+      PromiseToRetry.ensure.reset();
+      // clear f-singleton state
+      el.value = undefined;
+    });
+
+    it('only creates one client', function() {
+      expect(CrossStorageClient).calledWithNew;
+      expect(CrossStorageClient).calledOnce;
+    });
+
+    describe('failure', function() {
+
+      var errorSpy, detail;
+
+      beforeEach(()=>{
+        PromiseToRetry.ensure.callsArgWith(1, detail = {
+          tries: 1,
+          wait: 123,
+          error: 'err'
         });
+      });
 
-        beforeEach(function() {
-          replace('f-singleton').with('fake-f-singleton');
-          el = fixture('f-cross-storage-fixture');
+      describe('[pull]', function() {
+        beforeEach(function(done) {
+          el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
+          el.key = "trigger new pull";
         });
-
         afterEach(function() {
-          CrossStorageClient.reset();
+          el.removeEventListener('f-cross-storage-error', errorSpy);
         });
+        it('fires `f-cross-storage-error` on failure', function() {
+          expect(errorSpy).calledOnce;
+          expect(errorSpy.args[0][0].detail).to.equal(detail);
+        });
+      });
 
-        // TODO: test that it uses f-singleton
+      describe('[push]', function() {
+        beforeEach(function(done) {
+          el.key = 'key';
+          el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
+          el.value = 'val';
+        });
+        it('fires `f-cross-storage-error` on failure', function() {
+          expect(errorSpy).calledOnce;
+          expect(errorSpy.args[0][0].detail).to.equal(detail);
+        });
+      });
+    });
 
-        describe('repeating [hub-url]', function() {
+    describe('success', function() {
+      beforeEach(() => PromiseToRetry.ensure.callsArg(0));
 
-          beforeEach(function() {
-            el.hubUrl = 'same-hub';
-            client.onConnect.returns(new Promise((r) => r()));
+      describe('[pull]', function() {
+
+        let waitForValue = (done) => {
+          let cb = () => {
+            el.removeEventListener('value-changed', cb);
+            done();
+          };
+          el.addEventListener('value-changed', cb);
+        };
+
+        describe('[key exists]', function() {
+          let testNo = 0;
+          beforeEach(function(done) {
+            const key = `refresh${++testNo}`;
+            client.get.withArgs(key).returns(new Promise((r) => r('old')));
+            waitForValue(done);
+            el.key = key;
           });
 
           afterEach(function() {
-            client.onConnect.reset();
-            client.get.reset();
-            PromiseToRetry.ensure.reset();
             // clear f-singleton state
             el.value = undefined;
           });
 
-          it('only creates one client', function() {
-            expect(CrossStorageClient).calledWithNew;
-            expect(CrossStorageClient).calledOnce;
+          it('ensures success with PromiseToRetry', function() {
+            expect(PromiseToRetry.ensure).calledOnce;
+            expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
           });
 
-          describe('failure', function() {
-
-            var errorSpy, detail;
-
-            beforeEach(()=>{
-              PromiseToRetry.ensure.callsArgWith(1, detail = {
-                tries: 1,
-                wait: 123,
-                error: 'err'
-              });
-            });
-
-            describe('[pull]', function() {
-              beforeEach(function(done) {
-                el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.key = "trigger new pull";
-              });
-              afterEach(function() {
-                el.removeEventListener('f-cross-storage-error', errorSpy);
-              });
-              it('fires `f-cross-storage-error` on failure', function() {
-                expect(errorSpy).calledOnce;
-                expect(errorSpy.args[0][0].detail).to.equal(detail);
-              });
-            });
-
-            describe('[push]', function() {
-              beforeEach(function(done) {
-                el.key = 'key';
-                el.addEventListener('f-cross-storage-error', errorSpy = sinon.spy(()=>done()));
-                el.value = 'val';
-              });
-              it('fires `f-cross-storage-error` on failure', function() {
-                expect(errorSpy).calledOnce;
-                expect(errorSpy.args[0][0].detail).to.equal(detail);
-              });
-            });
+          it('connects first', function() {
+            expect(client.onConnect).calledOnce;
+            expect(client.onConnect).calledBefore(client.get);
           });
 
-          describe('success', function() {
-            beforeEach(() => PromiseToRetry.ensure.callsArg(0));
-
-            describe('[pull]', function() {
-
-              waitForValue = (done) => {
-                let cb = () => {
-                  el.removeEventListener('value-changed', cb);
-                  done();
-                };
-                el.addEventListener('value-changed', cb);
-              };
-
-              describe('[key exists]', function() {
-                let testNo = 0;
-                beforeEach(function(done) {
-                  const key = `refresh${++testNo}`;
-                  client.get.withArgs(key).returns(new Promise((r) => r('old')));
-                  waitForValue(done);
-                  el.key = key;
-                });
-
-                afterEach(function() {
-                  // clear f-singleton state
-                  el.value = undefined;
-                });
-
-                it('ensures success with PromiseToRetry', function() {
-                  expect(PromiseToRetry.ensure).calledOnce;
-                  expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
-                });
-
-                it('connects first', function() {
-                  expect(client.onConnect).calledOnce;
-                  expect(client.onConnect).calledBefore(client.get);
-                });
-
-                it('sets and notifies value from storage', function() {
-                  expect(el.value).to.equal('old');
-                });
-              });
-
-            });
-
-            describe('[push]', function() {
-
-              let testNo = 0;
-              beforeEach((done) => {
-                client.set = sinon.spy(()=> {
-                  done();
-                  return new Promise((r) => r('new'));
-                });
-                el.key = `key${++testNo}`;
-                el.value = 'new';
-              });
-
-              it('ensures success with PromiseToRetry', function() {
-                // once for pull and once for push
-                expect(PromiseToRetry.ensure).calledTwice;
-                expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
-              });
-
-              it('connects first', function() {
-                expect(client.onConnect).calledBefore(client.set);
-              });
-
-              it('sets storage value', function() {
-                expect(client.set).calledOnce;
-                expect(client.set).calledWith(`key${testNo}`, 'new');
-              });
-
-            });
+          it('sets and notifies value from storage', function() {
+            expect(el.value).to.equal('old');
           });
-
-        });
-
-        describe('different [hub-url]', function() {
-
-          beforeEach(function() {
-            el.hubUrl = 'some-hub';
-          });
-
-          it('uses the same reference to client object', function() {
-            expect(CrossStorageClient).to.be.calledWithNew
-            expect(CrossStorageClient).to.be.calledOnce
-          });
-
-        });
-
-        it('reflects properties to attributes', function() {
-          el.hubUrl = 'some url';
-          expect(el.getAttribute('hub-url')).to.be.ok;
         });
 
       });
-    </script>
+
+      describe('[push]', function() {
+
+        let testNo = 0;
+        beforeEach((done) => {
+          client.set = sinon.spy(()=> {
+            done();
+            return new Promise((r) => r('new'));
+          });
+          el.key = `key${++testNo}`;
+          el.value = 'new';
+        });
+
+        it('ensures success with PromiseToRetry', function() {
+          // once for pull and once for push
+          expect(PromiseToRetry.ensure).calledTwice;
+          expect(PromiseToRetry.ensure).calledBefore(client.onConnect);
+        });
+
+        it('connects first', function() {
+          expect(client.onConnect).calledBefore(client.set);
+        });
+
+        it('sets storage value', function() {
+          expect(client.set).calledOnce;
+          expect(client.set).calledWith(`key${testNo}`, 'new');
+        });
+
+      });
+    });
+
+  });
+
+  describe('different [hub-url]', function() {
+
+    beforeEach(function() {
+      el.hubUrl = 'some-hub';
+    });
+
+    it('uses the same reference to client object', function() {
+      expect(CrossStorageClient).to.be.calledWithNew
+      expect(CrossStorageClient).to.be.calledOnce
+    });
+
+  });
+
+  it('reflects properties to attributes', function() {
+    el.hubUrl = 'some url';
+    expect(el.getAttribute('hub-url')).to.be.ok;
+  });
+
+});
+</script>
 
   </body>
 </html>

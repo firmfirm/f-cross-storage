@@ -1,4 +1,4 @@
-<script>
+import { dedupingMixin } from '@polymer/polymer/lib/utils/mixin.js';
 /**
  * `FInterface.CrossStorage` exposes public interface of `<f-cross-storage>`.
  *
@@ -6,7 +6,7 @@
  *
  * @polymerBehavior
  */
-FInterface.CrossStorage = Polymer.dedupingMixin(function(superClass) {
+FInterface.CrossStorage = dedupingMixin(function(superClass) {
   return class CrossStorage extends superClass {
     static get properties() {
       return {
@@ -21,4 +21,3 @@ FInterface.CrossStorage = Polymer.dedupingMixin(function(superClass) {
     }
   }
 });
-</script>
