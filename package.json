@@ -1,6 +1,6 @@
 {
   "name": "f-cross-storage",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Wrapper element for `cross-storage` client",
   "scripts": {
     "test": "polymer test --npm",
